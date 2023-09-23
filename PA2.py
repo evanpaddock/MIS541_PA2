@@ -1,6 +1,13 @@
 
 def Main():
     ClearScreen()
+    cars = []
+    postiveWords = []
+    reviews = []
+
+    ReadInFile("cars.txt", cars)
+    ReadInFile("positive_word_dictionary.txt", postiveWords)
+    ReadInFile("reviews.txt", reviews)
 
     AsciiArtMenu()
     DisplayMenu()
@@ -14,6 +21,10 @@ def Main():
         DisplayMenu()
         menuChoice = input('Please make a selection: ')
         ClearScreen()
+
+    WriteOutFile("cars.txt", cars)
+    WriteOutFile("positive_word_dictionary.txt", postiveWords)
+    WriteOutFile("reviews.txt", reviews)
 
 def ClearScreen():
     print("\n" * 50) 
@@ -138,5 +149,28 @@ def Reports():
         DisplayMenu()
         userChoice = input("Please make a selection: ")
         ClearScreen()
+
+def ReadInFile(fileName, listToReadTo):
+    f = open(fileName, "r")
+    line = f.readline()
+    while(line != ""):
+        print(line)
+        line = line.strip('\n')
+        line = line.strip()
+        item = line.split('#')
+        listToReadTo.append(item)
+        line = f.readline()
+        
+    f.close()
+
+def WriteOutFile(fileName, listToReadFrom):
+    f = open(fileName, "w")
+    for unit in listToReadFrom:
+        for item in unit:
+            f.write(item)
+            if(item != unit[-1]):
+                f.write("#")
+        f.write("\n")
+    f.close()
 
 Main()

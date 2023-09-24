@@ -86,23 +86,77 @@ def CarInventory():
         )
 
     def AddCar():
+        def IsValidPriceFormat(price):
+            try:
+                float(price)
+                return True
+            except Exception:
+                return False
+
+        def IsValidYearFormat(year):
+            try:
+                int(year)
+                return True
+            except Exception:
+                return False
+
         print("What is the name of the car?")
         carName = input("Name: ")
 
+        while len(carName) == 0:
+            ClearScreen()
+
+            print("Car Name must be 1 character or greator. Please try again.")
+            print("What is the name of the car?")
+            carName = input("Name: ")
+
         isInInventory = CheckIfCarExists(carName, cars)
+
+        ClearScreen()
 
         if isInInventory:
             print("Car already exists. Reverting to inventory menu...")
             time.sleep(2)
         else:
+            lowestPrice = 0.00
+
             print("What is the type of the car?")
             carType = input("Type: ")
+
+            while not IsValidCarType(carType):
+                ClearScreen()
+
+                print("Car Type must be a valid car type. Please try again.\n")
+                print("What is the type of the car?")
+                carType = input("Type: ")
+
+            ClearScreen()
 
             print("What is the year of manufacture of the car?")
             carYearOfManufacture = input("Year of manufacture: ")
 
+            while not IsValidYearFormat(carYearOfManufacture) or not (
+                2010 < int(carYearOfManufacture) < 2020
+            ):
+                ClearScreen()
+
+                print("Year of manufacture must be between 2010 and 2020.\n")
+                print("What is the year of manufacture of the car?")
+                carYearOfManufacture = input("Year of manufacture: ")
+
+            ClearScreen()
+
             print("What is the price of the car?")
             carPrice = input("Price: ")
+
+            while not IsValidPriceFormat(carPrice) or float(carPrice) <= lowestPrice:
+                ClearScreen()
+                
+                print(f"Car Price must be more than {lowestPrice}")
+                print("What is the price of the car?")
+                carPrice = input("Price: ")
+
+            ClearScreen()
 
             cars.append([carName, carType, carYearOfManufacture, carPrice])
             WriteOutFile("cars.txt", cars)
@@ -163,7 +217,7 @@ def CarInventory():
         else:
             print("Car does not exist in inventory. Reverting to inventory menu...")
             time.sleep(2)
-    
+
     def DeleteCar():
         print("Available cars: ")
 
@@ -176,12 +230,12 @@ def CarInventory():
 
         isInInventory = CheckIfCarExists(carName, cars)
 
-        if(isInInventory):
+        if isInInventory:
             index = 0
             while index < len(cars):
-                if(cars[index][0] == carName):
+                if cars[index][0] == carName:
                     cars.remove(cars[index])
-                index+=1
+                index += 1
 
             WriteOutFile("cars.txt", cars)
 
@@ -190,7 +244,17 @@ def CarInventory():
         else:
             print("Car does not exist in inventory. Reverting to inventory menu...")
             time.sleep(2)
-        
+
+    def IsValidCarType(carTypeToCheck):
+        validTypes = ["sedan", "hatchback", "suv", "truck", "van", "convertable"]
+        isValid = False
+
+        for carType in validTypes:
+            if carType == carTypeToCheck:
+                isValid = True
+
+        return isValid
+
     def RouteEm(menuChoice):
         if menuChoice == "1":
             AddCar()

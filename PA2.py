@@ -1,4 +1,5 @@
 import time
+from datetime import date
 
 
 def Main():
@@ -86,29 +87,7 @@ def CarInventory():
         )
 
     def AddCar():
-        def IsValidPriceFormat(price):
-            try:
-                float(price)
-                return True
-            except Exception:
-                return False
-
-        def IsValidYearFormat(year):
-            try:
-                int(year)
-                return True
-            except Exception:
-                return False
-
-        print("What is the name of the car?")
-        carName = input("Name: ")
-
-        while len(carName) == 0:
-            ClearScreen()
-
-            print("Car Name must be 1 character or greator. Please try again.")
-            print("What is the name of the car?")
-            carName = input("Name: ")
+        carName = GetCarName()
 
         isInInventory = CheckIfCarExists(carName, cars)
 
@@ -118,43 +97,15 @@ def CarInventory():
             print("Car already exists. Reverting to inventory menu...")
             time.sleep(2)
         else:
-            lowestPrice = 0.00
-
-            print("What is the type of the car?")
-            carType = input("Type: ")
-
-            while not IsValidCarType(carType):
-                ClearScreen()
-
-                print("Car Type must be a valid car type. Please try again.\n")
-                print("What is the type of the car?")
-                carType = input("Type: ")
+            carType = GetType()
 
             ClearScreen()
 
-            print("What is the year of manufacture of the car?")
-            carYearOfManufacture = input("Year of manufacture: ")
-
-            while not IsValidYearFormat(carYearOfManufacture) or not (
-                2010 < int(carYearOfManufacture) < 2020
-            ):
-                ClearScreen()
-
-                print("Year of manufacture must be between 2010 and 2020.\n")
-                print("What is the year of manufacture of the car?")
-                carYearOfManufacture = input("Year of manufacture: ")
+            carYearOfManufacture = GetManufactureYear()
 
             ClearScreen()
 
-            print("What is the price of the car?")
-            carPrice = input("Price: ")
-
-            while not IsValidPriceFormat(carPrice) or float(carPrice) <= lowestPrice:
-                ClearScreen()
-                
-                print(f"Car Price must be more than {lowestPrice}")
-                print("What is the price of the car?")
-                carPrice = input("Price: ")
+            carPrice = GetPrice()
 
             ClearScreen()
 
@@ -167,10 +118,7 @@ def CarInventory():
 
     def EditCar():
         print("Available cars: ")
-
-        # Prints car names
-        for car in cars:
-            print(car[0])
+        WriteCarNames()
 
         print("\nWhat is the name of the car you want to edit?")
         carName = input("Name: ")
@@ -184,7 +132,11 @@ def CarInventory():
 
             updatedCar = list(foundCar)
 
+            # Stores the fields for a car in order of how they are stored
             carFieldNames = ["Name", "Type", "Year of Manufacture", "Price"]
+
+            # Stores methods to use if user answers yes to editing a field
+            fieldMethods = [GetCarName, GetType, GetManufactureYear, GetPrice]
             count = 1
 
             for field in foundCar[1:]:
@@ -193,14 +145,15 @@ def CarInventory():
                 print(
                     f"Current {carFieldNames[count]}: {field}. Do you want to change this?"
                 )
-                wantToEdit = input("(Yes/No): ")
+                wantToEdit = input("(yes/no): ")
 
                 ClearScreen()
 
-                if wantToEdit == "Yes":
-                    updatedCar[count] = input(
-                        f"New {carFieldNames[count]} of {foundCar[0]}: "
-                    )
+                if wantToEdit == "yes":
+                    print(f"Please enter a new {carFieldNames[count]}.\n")
+
+                    # updates the car they are changing by calling the method to update it.
+                    updatedCar[count] = fieldMethods[count]()
 
                 count += 1
 
@@ -212,10 +165,12 @@ def CarInventory():
 
             WriteOutFile("cars.txt", cars)
 
-            print("Car edited successfully! Reverting to inventory menu...")
+            print(f"{carName} edited successfully! Reverting to inventory menu...")
             time.sleep(2)
         else:
-            print("Car does not exist in inventory. Reverting to inventory menu...")
+            print(
+                f"{carName} does not exist in inventory. Reverting to inventory menu..."
+            )
             time.sleep(2)
 
     def DeleteCar():
@@ -268,6 +223,61 @@ def CarInventory():
         else:
             print("Invalid choice. Please try again.\n")
 
+    def IsValidPriceFormat(price):
+        try:
+            float(price)
+            return True
+        except Exception:
+            return False
+
+    def IsValidYearFormat(year):
+        try:
+            int(year)
+            return True
+        except Exception:
+            return False
+
+    def GetType():
+        print("What is the type of the car?")
+        carType = input("Type: ")
+
+        while not IsValidCarType(carType):
+            ClearScreen()
+
+            print("Car Type must be a valid car type. Please try again.\n")
+            print("What is the type of the car?")
+            carType = input("Type: ")
+
+        return carType
+
+    def GetManufactureYear():
+        print("What is the year of manufacture of the car?")
+        carYearOfManufacture = input("Year of manufacture: ")
+
+        while not IsValidYearFormat(carYearOfManufacture) or not (
+            2010 <= int(carYearOfManufacture) < 2020
+        ):
+            ClearScreen()
+
+            print("Year of manufacture must be between 2010 and 2020.\n")
+            print("What is the year of manufacture of the car?")
+            carYearOfManufacture = input("Year of manufacture: ")
+
+        return carYearOfManufacture
+
+    def GetPrice():
+        print("What is the price of the car?")
+        carPrice = input("Price: ")
+
+        while not IsValidPriceFormat(carPrice) or float(carPrice) <= 0.00:
+            ClearScreen()
+
+            print(f"Car Price must be more than $0.00")
+            print("What is the price of the car?")
+            carPrice = input("Price: ")
+
+        return carPrice
+
     DisplayMenu()
     userChoice = input("Please make a selection: ")
     ClearScreen()
@@ -290,10 +300,84 @@ def Review():
 
     def RouteEm(menuChoice):
         if menuChoice == "1":
-            print("Add a review")
+            pass
+            AddAReview()
             # i1-5,comment 1-100 chars, auto date mm-dd-yyyy
         else:
             print("Invalid choice. Please try again.\n")
+
+    def AddAReview():
+        def GetRating():
+            print("What rating do you give?(1-5)")
+            rating = input("Rating: ")
+
+            while not IsValidRating(rating):
+                ClearScreen()
+                print("Rating must be an integer between 1 and 5.\n")
+                print("What rating do you give?(1-5)")
+                rating = input("Rating: ")
+            return rating
+
+        def IsValidRating(rating):
+            try:
+                int(rating)
+                return True
+            except Exception:
+                return False
+
+        def IsValidComment(comment):
+            if 0 < len(comment) < 100:
+                return True
+            else:
+                return False
+
+        def GetComment():
+            print("Please leave your comment (1-100 characters).")
+            comment = input("Comment: ")
+
+            while not IsValidComment(comment):
+                ClearScreen()
+                print("Comments must be between 0 and 100 characters.\n")
+                print("What comment do you give?")
+                comment = input("Comment: ")
+            return comment
+
+        print("Available cars: ")
+        WriteCarNames()
+        print("\n")
+
+        carName = GetCarName()
+        isInInventory = CheckIfCarExists(carName, cars)
+
+        ClearScreen()
+
+        if isInInventory:
+            serialNumber = str(len(reviews) + 1)
+
+            rating = GetRating()
+
+            ClearScreen()
+
+            comment = GetComment()
+
+            ClearScreen()
+
+            today = date.today()
+
+            ClearScreen()
+
+            dateMDY = today.strftime("%m-%d-%Y")
+
+            reviews.append([serialNumber, carName, dateMDY, rating, comment])
+
+            WriteOutFile("reviews.txt", reviews)
+
+            print("Review has been added successfully!")
+            print("Reverting to review menu...")
+            time.sleep(2)
+        else:
+            print(f"{carName} does not exist in inventory. Reverting to review menu...")
+            time.sleep(2)
 
     DisplayMenu()
     userChoice = input("Please make a selection: ")
@@ -303,6 +387,7 @@ def Review():
     while userChoice != "2":
         RouteEm(userChoice)
 
+        ClearScreen()
         DisplayMenu()
         userChoice = input("Please make a selection: ")
         ClearScreen()
@@ -347,7 +432,6 @@ def ReadInFile(fileName, listToReadTo):
     line = f.readline()
 
     while line != "":
-        print(line)
         line = line.strip("\n")
         line = line.strip()
         item = line.split("#")
@@ -380,6 +464,25 @@ def FindCar(carName):
     for car in cars:
         if car[0] == carName:
             return tuple(car)
+
+
+def GetCarName():
+    print("What is the name of the car?")
+    carName = input("Name: ")
+    while len(carName) == 0:
+        ClearScreen()
+
+        print("Car Name must be 1 character or greator. Please try again.")
+        print("What is the name of the car?")
+        carName = input("Name: ")
+
+    return carName
+
+
+def WriteCarNames():
+    # Prints car names
+    for car in cars:
+        print(car[0])
 
 
 Main()

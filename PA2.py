@@ -68,8 +68,7 @@ def RouteEm(menuChoice):
         Review()
         ClearScreen()
     elif menuChoice == "3":
-        print("Reports")
-        input()
+        Reports()
         ClearScreen()
     else:
         print("Invalid Menu Choice. Please try again.")
@@ -230,13 +229,6 @@ def CarInventory():
         except Exception:
             return False
 
-    def IsValidYearFormat(year):
-        try:
-            int(year)
-            return True
-        except Exception:
-            return False
-
     def GetType():
         print("What is the type of the car?")
         carType = input("Type: ")
@@ -344,7 +336,7 @@ def Review():
 
         print("Available cars: ")
         WriteCarNames()
-        print("\n")
+        print()
 
         carName = GetCarName()
         isInInventory = CheckIfCarExists(carName, cars)
@@ -363,9 +355,6 @@ def Review():
             ClearScreen()
 
             today = date.today()
-
-            ClearScreen()
-
             dateMDY = today.strftime("%m-%d-%Y")
 
             reviews.append([serialNumber, carName, dateMDY, rating, comment])
@@ -396,7 +385,7 @@ def Review():
 def Reports():
     def DisplayMenu():
         print(
-            "Reports\n\n"
+            "Reports\n"
             "1. A report displaying the rating statistics for a given year (average, lowest and highest rating)\n"
             "2. A report displaying the individual reviews, number of reviews and average rating for each car\n"
             "3. A report displaying each review comment with positive words and the number of such comments\n"
@@ -405,14 +394,75 @@ def Reports():
 
     def RouteEm(menuChoice):
         if menuChoice == "1":
-            print("Stastics per year")
+            RatingStatisticsByYear()
+            ClearScreen()
         elif menuChoice == "2":
             print("Indivual review, number of reviews and average rating for each car")
-
         elif menuChoice == "3":
             print("review comments with positive words and the number of comments")
         else:
             print("Invalid choice. Please try again.\n")
+
+    def WriteOutReport(message, fileName):
+        f = open(fileName, "w")
+
+        for line in message:
+            f.write(line)
+
+        f.close()
+
+    def RatingStatisticsByYear():
+        print("What year do you want to report?")
+        year = input("Year: ")
+
+        while not IsValidYearFormat(year) or not 2015 <= int(year) <= 2020:
+            ClearScreen()
+
+            print("Invalid Year. Must be between 2015 and 2020.\n")
+
+            print("What year do you want to report?")
+            year = input("Year: ")
+
+        ClearScreen()
+
+        # Sorts reviews by year
+        reviewsByYear = sorted(reviews, key=lambda elem: elem[2][-4:])
+
+        minRating = 0
+        maxRating = 0
+        avgRating = 0
+        count = 0
+
+        for review in reviewsByYear:
+            if count == 0 and year == review[2][-4:]:
+                minRating = int(review[3])
+                maxRating = int(review[3])
+                avgRating = int(review[3])
+                count += 1
+            elif year == review[2][-4:]:
+                avgRating += int(review[3])
+                count += 1
+
+                if minRating > int(review[3]):
+                    minRating = int(review[3])
+
+                if maxRating < int(review[3]):
+                    maxRating = int(review[3])
+        if count != 0:
+            message = (
+                f"Rating Stats for the year of {year}:\n"
+                f"Max Rating: {maxRating}\n"
+                f"Min Rating: {minRating}\n"
+                f"Avg Rating: {avgRating/count}\n"
+            )
+
+        else:
+            message = f"There were 0 reviews for the year {year}\n"
+
+        WriteOutReport(message, f"rating_statistics_{year}.txt")
+
+        print(message)
+        input("Press any key to continue...")
 
     DisplayMenu()
     userChoice = input("Please make a selection: ")
@@ -483,6 +533,14 @@ def WriteCarNames():
     # Prints car names
     for car in cars:
         print(car[0])
+
+
+def IsValidYearFormat(year):
+    try:
+        int(year)
+        return True
+    except Exception:
+        return False
 
 
 Main()

@@ -1,6 +1,7 @@
 import time
 from datetime import date
 from operator import itemgetter
+from string import punctuation
 
 
 def Main():
@@ -61,9 +62,11 @@ def RouteEm(menuChoice):
     if menuChoice == "1":
         CarInventory()
         ClearScreen()
+        ReadInFile("cars.txt", cars)
     elif menuChoice == "2":
         Review()
         ClearScreen()
+        ReadInFile("reviews.txt", reviews)
     elif menuChoice == "3":
         Reports()
         ClearScreen()
@@ -289,7 +292,6 @@ def Review():
 
     def RouteEm(menuChoice):
         if menuChoice == "1":
-            pass
             AddAReview()
             # i1-5,comment 1-100 chars, auto date mm-dd-yyyy
         else:
@@ -333,7 +335,7 @@ def Review():
 
         print("Available cars: ")
         WriteCarNames()
-        print()
+        print("")
 
         carName = GetCarName()
         isInInventory = CheckIfCarExists(carName, cars)
@@ -466,9 +468,9 @@ def Reports():
     def ReviewsWithPositiveWords():
         def ContainsPositiveWord(listOfWords):
             for word in listOfWords:
-                for positiveWords in listOfWords:
-                    for positiveWord in positiveWords:
-                        if word.strip(".").lower() == positiveWord:
+                for listOfpositiveWords in positiveWords:
+                    for positiveWord in listOfpositiveWords:
+                        if word.strip(punctuation).lower() == positiveWord:
                             return True
             return False
 
@@ -478,6 +480,7 @@ def Reports():
             comment = review[4]
             wordsInComment = comment.split(" ")
             isPositiveComment = ContainsPositiveWord(wordsInComment)
+            input(isPositiveComment)
             if isPositiveComment:
                 message.append(
                     [
@@ -488,6 +491,7 @@ def Reports():
             message = ["There were no comments with positive words."]
 
         WriteOutReport(message, "comments_with_positive_words.txt")
+
         for line in message:
             for item in line:
                 print(item)

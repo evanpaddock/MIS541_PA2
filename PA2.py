@@ -6,14 +6,14 @@ from operator import itemgetter
 def Main():
     ClearScreen()
 
-    global cars, postiveWords, reviews
+    global cars, positiveWords, reviews
 
     cars = []
-    postiveWords = []
+    positiveWords = []
     reviews = []
 
     ReadInFile("cars.txt", cars)
-    ReadInFile("positive_word_dictionary.txt", postiveWords)
+    ReadInFile("positive_word_dictionary.txt", positiveWords)
     ReadInFile("reviews.txt", reviews)
 
     AsciiArtMenu()
@@ -28,10 +28,6 @@ def Main():
         DisplayMenu()
         menuChoice = input("Please make a selection: ")
         ClearScreen()
-
-    WriteOutFile("cars.txt", cars)
-    WriteOutFile("positive_word_dictionary.txt", postiveWords)
-    WriteOutFile("reviews.txt", reviews)
 
 
 def ClearScreen():
@@ -401,7 +397,8 @@ def Reports():
             RatingsByCar()
             ClearScreen()
         elif menuChoice == "3":
-            print("review comments with positive words and the number of comments")
+            ReviewsWithPositiveWords()
+            ClearScreen()
         else:
             print("Invalid choice. Please try again.\n")
 
@@ -428,7 +425,7 @@ def Reports():
 
         ClearScreen()
 
-        # Sorts reviews by year
+        # Sorts reviews by year - elem[2][-4:] targets a specific elements year from the last 4 characters '06-20-2020' = '2020'
         reviewsByYear = sorted(reviews, key=lambda elem: elem[2][-4:])
 
         minRating = 0
@@ -458,13 +455,42 @@ def Reports():
                 f"Min Rating: {minRating}\n"
                 f"Avg Rating: {avgRating/count}\n"
             )
-
         else:
-            message = f"There were 0 reviews for the year {year}\n"
+            message = f"There were 0 reviews for the year of {year}\n"
 
         WriteOutReport(message, f"rating_statistics_{year}.txt")
 
         print(message)
+        input("Press any key to continue...")
+
+    def ReviewsWithPositiveWords():
+        def ContainsPositiveWord(listOfWords):
+            for word in listOfWords:
+                for positiveWords in listOfWords:
+                    for positiveWord in positiveWords:
+                        if word.strip(".").lower() == positiveWord:
+                            return True
+            return False
+
+        message = []
+
+        for review in reviews:
+            comment = review[4]
+            wordsInComment = comment.split(" ")
+            isPositiveComment = ContainsPositiveWord(wordsInComment)
+            if isPositiveComment:
+                message.append(
+                    [
+                        f"Car: {review[1]}\nReview Date: {review[2]}\nRating: {review[3]}\nComment: {review[4]}\n\n"
+                    ]
+                )
+        if len(message) == 0:
+            message = ["There were no comments with positive words."]
+
+        WriteOutReport(message, "comments_with_positive_words.txt")
+        for line in message:
+            for item in line:
+                print(item)
         input("Press any key to continue...")
 
     def RatingsByCar():

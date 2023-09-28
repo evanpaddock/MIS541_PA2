@@ -480,7 +480,6 @@ def Reports():
             comment = review[4]
             wordsInComment = comment.split(" ")
             isPositiveComment = ContainsPositiveWord(wordsInComment)
-            input(isPositiveComment)
             if isPositiveComment:
                 message.append(
                     [

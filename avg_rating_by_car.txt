@@ -1,0 +1,18 @@
+
+Name: rockstar | Number of Reviews: 4 |  Average Rating: 3.25
+It's alright. Gives me some trouble some times.
+Awesome car. Loved it.
+Average car.
+Don't get it
+
+Name: starship | Number of Reviews: 1 |  Average Rating: 4.0
+Nice car. Would recommend it.
+
+Name: suave | Number of Reviews: 3 |  Average Rating: 2.3333333333333335
+Nice car. Have driven it quite a bit with much trouble.
+I do not like it. Don't get it.
+Don't recommend the car. Didn't like it!!! Don't buy it.
+
+Name: trend | Number of Reviews: 2 |  Average Rating: 3.5
+Had issues with the brakes.
+Good car. The media system is not great though.

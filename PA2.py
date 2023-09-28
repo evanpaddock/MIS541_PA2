@@ -1,5 +1,6 @@
 import time
 from datetime import date
+from operator import itemgetter
 
 
 def Main():
@@ -397,7 +398,8 @@ def Reports():
             RatingStatisticsByYear()
             ClearScreen()
         elif menuChoice == "2":
-            print("Indivual review, number of reviews and average rating for each car")
+            RatingsByCar()
+            ClearScreen()
         elif menuChoice == "3":
             print("review comments with positive words and the number of comments")
         else:
@@ -406,8 +408,9 @@ def Reports():
     def WriteOutReport(message, fileName):
         f = open(fileName, "w")
 
-        for line in message:
-            f.write(line)
+        for submessage in message:
+            for line in submessage:
+                f.write(line)
 
         f.close()
 
@@ -463,6 +466,50 @@ def Reports():
 
         print(message)
         input("Press any key to continue...")
+
+    def RatingsByCar():
+        reviewsByCar = sorted(reviews, key=itemgetter(1))
+
+        currentCar = reviewsByCar[0][1]
+        count = 1
+        sumOfReviewRatings = int(reviewsByCar[0][3])
+
+        message = []
+        commentsForCurrentCar = [reviewsByCar[0][4]]
+
+        for review in reviewsByCar[1:]:
+            if review[1] == currentCar:
+                count += 1
+                sumOfReviewRatings += int(review[3])
+                commentsForCurrentCar.append(review[4])
+            else:
+                message.append(
+                    [
+                        f"\nName: {currentCar} | Number of Reviews: {count} |  Average Rating: {sumOfReviewRatings/count}\n",
+                    ]
+                )
+                for comment in commentsForCurrentCar:
+                    message[len(message) - 1].append(comment + "\n")
+
+                count = 1
+                sumOfReviewRatings = int(review[3])
+                commentsForCurrentCar = [review[4]]
+                currentCar = review[1]
+
+        message.append(
+            [
+                f"\nName: {currentCar} | Number of Reviews: {count} |  Average Rating: {sumOfReviewRatings/count}\n",
+            ]
+        )
+        for comment in commentsForCurrentCar:
+            message[len(message) - 1].append(comment + "\n")
+
+        WriteOutReport(message, "avg_rating_by_car.txt")
+
+        for carList in message:
+            for item in carList:
+                print(item)
+        input()
 
     DisplayMenu()
     userChoice = input("Please make a selection: ")

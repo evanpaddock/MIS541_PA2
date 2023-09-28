@@ -511,7 +511,7 @@ def Reports():
             else:
                 message.append(
                     [
-                        f"\nName: {currentCar} | Number of Reviews: {count} |  Average Rating: {sumOfReviewRatings/count}\n",
+                        f"Car: {currentCar} | Number of Reviews: {count} |  Average Rating: {sumOfReviewRatings/count}\n\n",
                     ]
                 )
                 for comment in commentsForCurrentCar:

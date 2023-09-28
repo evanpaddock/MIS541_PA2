@@ -1,4 +1,0 @@
-Rating Stats for the year of 2020:
-Max Rating: 4
-Min Rating: 1
-Avg Rating: 2.7142857142857144

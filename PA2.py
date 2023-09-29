@@ -234,8 +234,14 @@ def CarInventory():
             return False
 
     def GetType():
-        print("What is the type of the car?")
-        carType = input("Type: ")
+        validTypes = ["sedan", "hatchback", "suv", "truck", "van", "convertable"]
+
+        print("What is the type of the car?\n\nValid Types:")
+
+        for typeOption in validTypes:
+            print(f"{typeOption} ", end="")
+
+        carType = input("\n\nType: ")
 
         while not IsValidCarType(carType):
             ClearScreen()
@@ -392,7 +398,9 @@ def Reports():
             "1. A report displaying the rating statistics for a given year (average, lowest and highest rating)\n"
             "2. A report displaying the individual reviews, number of reviews and average rating for each car\n"
             "3. A report displaying each review comment with positive words and the number of such comments\n"
-            "4. Exit the inventory menu and return to the main menu\n"
+            "4. Exit the inventory menu and return to the main menu\n\n"
+            "5. A report displaying the average car price by type\n"
+            "6. A report displaying the average car price by year\n"
         )
 
     def RouteEm(menuChoice):
@@ -404,6 +412,12 @@ def Reports():
             ClearScreen()
         elif menuChoice == "3":
             ReviewsWithPositiveWords()
+            ClearScreen()
+        elif menuChoice == "5":
+            avgPriceByType()
+            ClearScreen()
+        elif menuChoice == "6":
+            avgPriceByYear()
             ClearScreen()
         else:
             print("Invalid choice. Please try again.\n")
@@ -417,7 +431,7 @@ def Reports():
 
         f.close()
 
-    def RatingStatisticsByYear():
+    def GetYear():
         print("What year do you want to report?")
         year = input("Year: ")
 
@@ -429,10 +443,18 @@ def Reports():
             print("What year do you want to report?")
             year = input("Year: ")
 
+        return year
+
+    def SortReviewsByYear():
+        # Sorts reviews by year - elem[2][-4:] targets a specific elements year from the last 4 characters '06-20-2020' = '2020'
+        return sorted(reviews, key=lambda elem: elem[2][-4:])
+
+    def RatingStatisticsByYear():
+        year = GetYear()
+
         ClearScreen()
 
-        # Sorts reviews by year - elem[2][-4:] targets a specific elements year from the last 4 characters '06-20-2020' = '2020'
-        reviewsByYear = sorted(reviews, key=lambda elem: elem[2][-4:])
+        reviewsByYear = SortReviewsByYear()
 
         minRating = 0
         maxRating = 0
@@ -544,6 +566,60 @@ def Reports():
                 print(item)
         input()
 
+    def avgPriceByYear():
+        carsByYear = sorted(cars, key=itemgetter(2), reverse=True)
+
+        sumPrice = float(carsByYear[0][3])
+        currentYear = carsByYear[0][2]
+        count = 1.00
+        message = []
+
+        for car in carsByYear[1:]:
+            if car[2] == currentYear:
+                count += 1.00
+                sumPrice += float(car[3])
+            else:
+                message.append(f"Year: {currentYear} | Average price: {sumPrice/count}")
+                count = 1
+                sumPrice = float(car[3])
+                currentYear = car[2]
+
+        message.append(f"Year: {currentYear} | Average price: {sumPrice/count}")
+
+        WriteOutReport(message, f"avg_price_by_year.txt")
+
+        for line in message:
+            print(line)
+
+        input("\nPress enter to continute...")
+
+    def avgPriceByType():
+        carsByType = sorted(cars, key=itemgetter(1), reverse=True)
+
+        sumPrice = float(carsByType[0][3])
+        currentType = carsByType[0][1]
+        count = 1.00
+        message = []
+
+        for car in carsByType[1:]:
+            if car[1] == currentType:
+                count += 1.00
+                sumPrice += float(car[3])
+            else:
+                message.append(f"Type: {currentType} | Average price: {sumPrice/count}")
+                count = 1
+                sumPrice = float(car[3])
+                currentType = car[1]
+
+        message.append(f"Type: {currentType} | Average price: {sumPrice/count}")
+
+        WriteOutReport(message, f"avg_price_by_type.txt")
+
+        for line in message:
+            print(line)
+
+        input("\nPress enter to continute...")
+
     DisplayMenu()
     userChoice = input("Please make a selection: ")
 
@@ -633,7 +709,7 @@ def WriteAllCarInfo():
             count += 1
         print("")
 
-    input("Press enter to continute...")
+    input("\nPress enter to continute...")
 
 
 Main()

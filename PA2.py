@@ -82,7 +82,8 @@ def CarInventory():
             "1. Add a car to the inventory\n"
             "2. Edit a car's data in the inventory\n"
             "3. Delete a car from the inventory\n"
-            "4. Exit the inventory menu and return to the main menu\n"
+            "4. Exit the inventory menu and return to the main menu\n\n"
+            "5. View all cars currently in inventory\n"
         )
 
     def AddCar():
@@ -218,6 +219,9 @@ def CarInventory():
             ClearScreen()
         elif menuChoice == "3":
             DeleteCar()
+            ClearScreen()
+        elif menuChoice == "5":
+            WriteAllCarInfo()
             ClearScreen()
         else:
             print("Invalid choice. Please try again.\n")
@@ -617,6 +621,19 @@ def IsValidYearFormat(year):
         return True
     except Exception:
         return False
+
+
+def WriteAllCarInfo():
+    attributeNames = ["Name", "Type", "Year", "Price"]
+
+    for car in cars:
+        count = 0
+        for attribute in car:
+            print(f"{attributeNames[count]}: {attribute} ", end="")
+            count += 1
+        print("")
+
+    input("Press enter to continute...")
 
 
 Main()

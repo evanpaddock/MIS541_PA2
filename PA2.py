@@ -579,17 +579,17 @@ def Reports():
                 count += 1.00
                 sumPrice += float(car[3])
             else:
-                message.append(f"Year: {currentYear} | Average price: {sumPrice/count}")
+                message.append(f"Year: {currentYear} | Average price: {sumPrice/count}\n")
                 count = 1
                 sumPrice = float(car[3])
                 currentYear = car[2]
 
-        message.append(f"Year: {currentYear} | Average price: {sumPrice/count}")
+        message.append(f"Year: {currentYear} | Average price: {sumPrice/count}\n")
 
         WriteOutReport(message, f"avg_price_by_year.txt")
 
         for line in message:
-            print(line)
+            print(line,end="")
 
         input("\nPress enter to continute...")
 
@@ -606,17 +606,17 @@ def Reports():
                 count += 1.00
                 sumPrice += float(car[3])
             else:
-                message.append(f"Type: {currentType} | Average price: {sumPrice/count}")
+                message.append(f"Type: {currentType} | Average price: {sumPrice/count}\n")
                 count = 1
                 sumPrice = float(car[3])
                 currentType = car[1]
 
-        message.append(f"Type: {currentType} | Average price: {sumPrice/count}")
+        message.append(f"Type: {currentType} | Average price: {sumPrice/count}\n")
 
         WriteOutReport(message, f"avg_price_by_type.txt")
 
         for line in message:
-            print(line)
+            print(line, end="")
 
         input("\nPress enter to continute...")
 

@@ -401,6 +401,7 @@ def Reports():
             "4. Exit the inventory menu and return to the main menu\n\n"
             "5. A report displaying the average car price by type\n"
             "6. A report displaying the average car price by year\n"
+            "7. A report displaying the individual reviews and number of reviews by positive word\n"
         )
 
     def RouteEm(menuChoice):
@@ -414,10 +415,13 @@ def Reports():
             ReviewsWithPositiveWords()
             ClearScreen()
         elif menuChoice == "5":
-            avgPriceByType()
+            AvgPriceByType()
             ClearScreen()
         elif menuChoice == "6":
-            avgPriceByYear()
+            AvgPriceByYear()
+            ClearScreen()
+        elif menuChoice == "7":
+            NumberOfReviewsPerPositiveWord()
             ClearScreen()
         else:
             print("Invalid choice. Please try again.\n")
@@ -566,7 +570,7 @@ def Reports():
                 print(item)
         input()
 
-    def avgPriceByYear():
+    def AvgPriceByYear():
         carsByYear = sorted(cars, key=itemgetter(2), reverse=True)
 
         sumPrice = float(carsByYear[0][3])
@@ -579,7 +583,9 @@ def Reports():
                 count += 1.00
                 sumPrice += float(car[3])
             else:
-                message.append(f"Year: {currentYear} | Average price: {sumPrice/count}\n")
+                message.append(
+                    f"Year: {currentYear} | Average price: {sumPrice/count}\n"
+                )
                 count = 1
                 sumPrice = float(car[3])
                 currentYear = car[2]
@@ -589,11 +595,11 @@ def Reports():
         WriteOutReport(message, f"avg_price_by_year.txt")
 
         for line in message:
-            print(line,end="")
+            print(line, end="")
 
         input("\nPress enter to continute...")
 
-    def avgPriceByType():
+    def AvgPriceByType():
         carsByType = sorted(cars, key=itemgetter(1), reverse=True)
 
         sumPrice = float(carsByType[0][3])
@@ -606,7 +612,9 @@ def Reports():
                 count += 1.00
                 sumPrice += float(car[3])
             else:
-                message.append(f"Type: {currentType} | Average price: {sumPrice/count}\n")
+                message.append(
+                    f"Type: {currentType} | Average price: {sumPrice/count}\n"
+                )
                 count = 1
                 sumPrice = float(car[3])
                 currentType = car[1]
@@ -619,6 +627,47 @@ def Reports():
             print(line, end="")
 
         input("\nPress enter to continute...")
+
+    def NumberOfReviewsPerPositiveWord():
+        count = 0
+        message = []
+
+        for positiveWord in positiveWords:
+            reviewContainsPositiveWord = False
+            commentsPerWord = []
+            for review in reviews:
+                comment = review[4]
+
+                wordsInReview = comment.strip()
+                wordsInReview = wordsInReview.split(" ")
+
+                for word in wordsInReview:
+                    if word.strip(punctuation).lower() == positiveWord[0]:
+                        reviewContainsPositiveWord = True
+                if reviewContainsPositiveWord:
+                    count += 1
+                    reviewContainsPositiveWord = False
+                if count > 0:
+                    message.append(
+                        f'The positive word "{positiveWord[0]}" appeared {count} times in the following comments:\n\n'
+                    )
+                    input(positiveWord)
+                    input(comment)
+                    message.append(f"{comment}\n")
+                    for commentWithWord in commentsPerWord:
+                        message.append(f"{commentWithWord}\n")
+                    count = 0
+                    commentsPerWord = []
+
+        if len(message) == 0:
+            message = ["There were no reviews with positive comments.\n"]
+
+        WriteOutReport(message, "comments_per_positive_word.txt")
+
+        for line in message:
+            print(line, end="")
+
+        input("Press enter to continue...")
 
     DisplayMenu()
     userChoice = input("Please make a selection: ")

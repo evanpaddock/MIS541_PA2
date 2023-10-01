@@ -62,10 +62,12 @@ def RouteEm(menuChoice):
     if menuChoice == "1":
         CarInventory()
         ClearScreen()
+        cars = []
         ReadInFile("cars.txt", cars)
     elif menuChoice == "2":
         Review()
         ClearScreen()
+        reviews = []
         ReadInFile("reviews.txt", reviews)
     elif menuChoice == "3":
         Reports()
@@ -345,7 +347,7 @@ def Review():
 
         print("Available cars: ")
         WriteCarNames()
-        print("")
+        print("\n")
 
         carName = GetCarName()
         isInInventory = CheckIfCarExists(carName, cars)
@@ -645,19 +647,17 @@ def Reports():
                     if word.strip(punctuation).lower() == positiveWord[0]:
                         reviewContainsPositiveWord = True
                 if reviewContainsPositiveWord:
+                    commentsPerWord.append(comment)
                     count += 1
                     reviewContainsPositiveWord = False
-                if count > 0:
-                    message.append(
-                        f'The positive word "{positiveWord[0]}" appeared {count} times in the following comments:\n\n'
-                    )
-                    input(positiveWord)
-                    input(comment)
-                    message.append(f"{comment}\n")
-                    for commentWithWord in commentsPerWord:
-                        message.append(f"{commentWithWord}\n")
-                    count = 0
-                    commentsPerWord = []
+            if count > 0:
+                message.append(
+                    f'The positive word "{positiveWord[0]}" appeared {count} times in the following comments:\n\n'
+                )
+                for commentWithWord in commentsPerWord:
+                    message.append(f"{commentWithWord}\n")
+                count = 0
+                commentsPerWord = []
 
         if len(message) == 0:
             message = ["There were no reviews with positive comments.\n"]
@@ -667,7 +667,7 @@ def Reports():
         for line in message:
             print(line, end="")
 
-        input("Press enter to continue...")
+        input("\nPress enter to continue...")
 
     DisplayMenu()
     userChoice = input("Please make a selection: ")

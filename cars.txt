@@ -5,3 +5,4 @@ starship#hatchback#2019#29000.0
 maverick#convertible#2020#35000.0
 test#suv#2019#10000.00
 a#sedan#2019#60000
+Cruiser#convertable#2010#12995

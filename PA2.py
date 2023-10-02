@@ -652,15 +652,18 @@ def Reports():
                     reviewContainsPositiveWord = False
             if count > 0:
                 message.append(
-                    f'The positive word "{positiveWord[0]}" appeared {count} times in the following comments:\n\n'
+                    f'The positive word "{positiveWord[0]}" appeared {count} times in the following comments:\n'
                 )
                 for commentWithWord in commentsPerWord:
                     message.append(f"{commentWithWord}\n")
+                message.append("\n")
                 count = 0
                 commentsPerWord = []
 
         if len(message) == 0:
-            message = ["There were no reviews with positive comments.\n"]
+            message = ["There were no reviews with positive comments.\n\n"]
+
+        message.pop()
 
         WriteOutReport(message, "comments_per_positive_word.txt")
 

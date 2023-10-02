@@ -546,11 +546,13 @@ def Reports():
             else:
                 message.append(
                     [
-                        f"Car: {currentCar} | Number of Reviews: {count} |  Average Rating: {sumOfReviewRatings/count}\n\n",
+                        f"Car: {currentCar} | Number of Reviews: {count} |  Average Rating: {sumOfReviewRatings/count}\n",
                     ]
                 )
                 for comment in commentsForCurrentCar:
                     message[len(message) - 1].append(comment + "\n")
+
+                message.append("\n")
 
                 count = 1
                 sumOfReviewRatings = int(review[3])
@@ -559,7 +561,7 @@ def Reports():
 
         message.append(
             [
-                f"\nName: {currentCar} | Number of Reviews: {count} |  Average Rating: {sumOfReviewRatings/count}\n",
+                f"Car: {currentCar} | Number of Reviews: {count} |  Average Rating: {sumOfReviewRatings/count}\n",
             ]
         )
         for comment in commentsForCurrentCar:
